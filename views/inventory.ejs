@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>inventories</title>
+</head>
+<body>
+    <h1>INVENTORIES</h1>
+    <form method="POST" action="/inventory">
+        <input type="text" name="jenis" placeholder="jenis"> <br> <br>
+        <input type="text" name="serial_number" placeholder="serial number"> <br><br>
+        <input type="text" name="kategori" placeholder="kategori"> <br><br>
+        <input type="submit" value="SIMPAN"> <br> <br>
+    </form>
+
+
+
+    <table>
+        <thead>
+            <tr>
+                <td>
+                    No
+                </td>
+                <td>
+                    Id Member
+                </td>
+                <td>
+                    Jenis
+                </td>
+                <td>
+                    Serial Number
+                </td>
+                <td>
+                    Kategori
+                </td>
+                <td>
+                    Status
+                </td>
+                <td>
+                    Tanggal Pinjam
+                </td>
+                <td>
+                    Tanggal Kembali
+                </td>  
+                <td>
+                    Action
+                </td>  
+            </tr>
+        </thead>
+
+        <tbody>
+            <% inventories.forEach((elemen, idx)=> { %>
+                <tr>
+                    <td>
+                        <%= idx + 1%>
+                    </td>
+                    <td>
+                        <%= elemen.id %>
+                    </td>
+                    <td>
+                        <%= elemen.jenis %>
+                    </td>
+                    <td>
+                        <%= elemen.serial_number %>
+                    </td>
+                    <td>
+                        <%= elemen.kategori %>
+                    </td>
+                    <td>
+                        <%= elemen.status %>
+                    </td>
+                    <td>
+                        <%= elemen.tanggal_pinjam %>
+                    </td>
+                    <td>
+                        <%= elemen.tanggal_kembali %>
+                    </td>
+                    <td>
+                        <a href= <%= `/inventory/${elemen.id}/edit` %> > edit </a> || <a href= <%= `/inventory/${elemen.id}/delete` %> >delete</a>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+
+
+</body>
+</html>
