@@ -1,0 +1,8 @@
+<% if(typeof inventories !== 'undefined'){ %>
+    <select name="inventory_id" >
+    <% inventories.forEach((elemen, idx)=>{ %>
+            <option value="<%- elemen.id %>"><%-elemen.jenis%></option>
+    <% }) %>
+    </select>
+<% } %>
+

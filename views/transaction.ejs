@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+    <%- include('../partial/header')%>
+    <br><br>
+    <h1>Transaction</h1>
+    <h5>Buat Transaksi Baru : </h5>
+    <form method="POST" action="/transaction">
+        <input type="text" name="MemberId" placeholder="MemberId">
+        <input type="submit" value="VERIFIKASI">
+    </form>
+    <br><br>
+    <h5>Filter Berdasarkan Tanggal : </h5>
+    <form method="POST" action="/transaction/filter_by_date">
+        <input type="date" name="startDate">
+        <input type="date" name="endDate" >
+        <input type="submit" value="CARI">
+    </form>
+    <br><br>
+    <table class="table">
+        <thead>
+            <td>
+                No.
+            </td>
+            <td>
+                Tanggal Transaksi
+            </td>
+            <td>
+                Id Transaction
+            </td>
+            <td>
+                Id Member
+            </td>
+            <td>
+                Nama Member
+            </td>
+            <td>
+                Total Transaksi
+            </td>
+            <td>
+                Action
+            </td>
+        </thead>
+        <tbody>
+            <% transactions.forEach((elemen,idx)=>{ %>
+                <tr>
+                    <td>
+                        <%- idx + 1 %>
+                    </td>
+                    <td>
+                        <%- formatTanggal(elemen.createdAt) %>
+                    </td>
+                    <td>
+                        <%- elemen.id %>
+                    </td>
+                    <td>
+                        <%- elemen.MemberId %>
+                    </td>
+                    <td>
+                        <%- elemen.Member.name %>
+                    </td>
+                    <td>
+                        <%- formatUang(elemen.total_harga_transaction) %>
+                    </td>
+                    <td>
+                        <a href="/transaction/<%= elemen.id %>/lihat_detail_transaction">edit</a> ||
+                        <a href="/quotation/<%= elemen.id %>">Quotation</a> ||
+                        <a href="/transaction/surat_jalan/<%= elemen.id %>">Surat Jalan</a> ||
+                        <a href="/transaction/<%= elemen.id %>/hapus_transaction">hapus</a>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    
+</body>
+</html>

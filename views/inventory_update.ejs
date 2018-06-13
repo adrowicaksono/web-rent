@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Inventory Update</title>
+    <title>Member Update</title>
 </head>
 <body>
+    <%- include('../partial/header.ejs'); %>
     <h1>Inventory Updated</h1>
-    <%= inventory %>
-    <form method="POST" action="">
-        <input type="text" value="" placeholder="jenis">
-        <input type="text" value="" placeholder="serial number">
-        <input type="text" value="" placeholder="kategori">
+    <h2> inventori no. id : <%= inventory.id %> </h2>
+    <form method="POST" action=<%= `/inventory/${inventory.id}/edit` %> >
+        <input type="text" value= "<%= inventory.jenis %>"  placeholder="jenis" name="jenis"> <br> <br>
+        <input type="text" value= "<%= inventory.serial_number %>" placeholder="serial number" name="serial_number" > <br> <br>
+        <input type="text" value= "<%= inventory.kategori %>" placeholder="kategori" name="kategori"> <br> <br>
+        <input type="text" value= "<%= inventory.harga_sewa %>" placeholder="harga sewa" name="harga_sewa"> <br> <br>
         <input type="submit" value="UPDATE">
     </form>
 </body>

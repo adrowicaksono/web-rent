@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Member Update</title>
+</head>
+<body>
+    <%- include('../partial/header.ejs'); %>
+    <h1>Member Updated</h1>
+    <h2> member no. id : <%= member.id %> </h2>
+    <form method="POST" action=<%= `/member/${member.id}/edit` %> >
+        <input type="text" value= "<%= member.name %>"  placeholder="name" name="name"> <br> <br>
+        <input type="text" value= "<%= member.alamat %>" placeholder="alamat" name="alamat" > <br> <br>
+        <input type="text" value= "<%= member.no_telpon %>" placeholder="no_telpon" name="no_telpon"> <br> <br>
+        <input type="text" value= "<%= member.data_scan %>" placeholder="data_scan" name="data_scan"> <br> <br>
+        <input type="submit" value="UPDATE">
+    </form>
+</body>
+</html>

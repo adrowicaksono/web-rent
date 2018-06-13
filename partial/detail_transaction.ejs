@@ -1,0 +1,55 @@
+<% if(typeof transaction_details !== 'undefined'){ %>
+    <table class="table">
+        <thead>
+            <td>
+                No.
+            </td>
+            <td>
+                Transaction Id
+            </td>
+            <td>
+                Jenis
+            </td>
+            <td>
+                Serial Number
+            </td>
+            <td>
+                Tanggal Mulai Sewa
+            </td>
+            <td>
+                Tanggal Pengembalian
+            </td>
+            <td>
+                Harga Sewa
+            </td>
+        </thead>
+        <tbody>
+            <% transaction_details.forEach((elemen, idx) =>{ %>
+                <tr>
+                    <td>
+                        <%- idx+1 %>
+                    </td>
+                    <td>
+                        <%- elemen.TransactionId %>
+                    </td>
+                    <td>
+                        <%- elemen.Inventory.jenis %>
+                    </td>
+                    <td>
+                        <%- elemen.Inventory.serial_number%>
+                    </td>
+                    <td>
+                        <%- formatTanggal(elemen.tanggal_pinjam) %>
+                    </td>
+                    <td>
+                        <%- formatTanggal(elemen.tanggal_kembali) %>
+                    </td>
+                    <td>
+                        <%- formatUang(elemen.harga_sewa) %>
+                    </td>
+                </tr>
+            <% })%>
+        </tbody>
+    </table>
+<% } %>
+

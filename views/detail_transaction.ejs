@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+
+
+    <%- include('../partial/header.ejs') %>
+    <br>
+    <div class="alert alert-success">
+    <label > Nama : <%= transaction.Member.name %> </label> <br>
+    <label > No Telp : <%= transaction.Member.no_telpon %> </label> <br>
+    <label > No Request : <%= transaction.id %> </label> <br>
+    </div>
+    
+        <table class="table">
+            <thead>
+                <td>
+                    Kategori :
+                </td>
+                <td>
+                    Jenis :
+                </td>
+                <td>
+                    Tanggal Pinjam :
+                </td>
+                <td>
+                    Tanggal Kembali :
+                </td>
+                <td>
+                    Action :
+                </td>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <form method="POST" action="/transaction/<%= transaction.id %>/filter">
+                            <select name="kategori" >
+                                <option></option>
+                                <% kategories.forEach(elemen=>{ %>
+                                    <option value="<%- elemen.kategori %>"><%- elemen.kategori %> </option>
+                                    <% }) %>
+                            </select>
+                            <input type="submit" value=">">
+                        </form>
+                    </td>
+                    <td>
+                    <form method="POST" action= <%= `/transaction/${transaction.id}/add_inventory ` %> >
+                        <%- include('../partial/inventory_by_filter.ejs')%>                        
+                    </td>
+                    <td>
+                        <input type="date" name="tanggal_pinjam">
+                    </td>
+                    <td>
+                        <input type="date" name="tanggal_kembali">
+                    </td>
+                    <td>
+                        <input type="submit" value="tambahkan">
+                    </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+       
+    <%- include('../partial/detail_transaction.ejs') %>
+    
+    <br>
+
+    <form method="POST" action="/transaction/<%- transaction.id %>/simpan_transaksi" style="float:left; border:1px">
+        <input type="submit" value="SIMPAN">
+    </form>
+
+    <form method="POST" action= <%- ` /transaction/${transaction.id}/rollback_detail_transaction ` %> >
+        <input type="submit" value="BATAL">
+    </form>
+
+<script>
+    var x = document.getElementById("kategori").value
+</script>
+</body>
+</html>

@@ -1,14 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>member</title>
 </head>
 <body>
-    <h1>MEMBER</h1>
+    <%- include('../partial/header.ejs'); %>
+   
+    <h1>Member</h1>
+    <form method="POST" action="/member">
+        <input type="text" name="name" placeholder="name"> <br> <br>
+        <input type="text" name="alamat" placeholder="alamat"> <br><br>
+        <input type="text" name="no_telpon" placeholder="no_telpon"> <br><br>
+        <input type="text" name="data_scan" placeholder="data_scan"> <br><br>
+        <input type="submit" value="SIMPAN"> <br> <br>
+    </form>
+    
 
-    <%= members %>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <td>
+                    No
+                </td>
+                <td>
+                    ID Member
+                </td>
+                <td>
+                    Nama
+                </td>
+                <td>
+                    Alamat
+                </td>
+                <td>
+                    No. Telpon
+                </td>
+                <td>
+                    Scan ID
+                </td>  
+                <td>
+                    Action
+                </td>  
+            </tr>
+        </thead>
+
+        <tbody>
+            <% members.forEach((elemen, idx)=> { %>
+                <tr>
+                    <td>
+                        <%= idx + 1%>
+                    </td>
+                    <td>
+                        <%= elemen.id %>
+                    </td>
+                    <td>
+                        <%= elemen.name %>
+                    </td>
+                    <td>
+                        <%= elemen.alamat %>
+                    </td>
+                    <td>
+                        <%= elemen.no_telpon %>
+                    </td>
+                    <td>
+                        <%= elemen.data_scan_id %>
+                    </td>
+                    <td>
+                        <a href= <%= `/member/${elemen.id}/edit` %> > edit </a> || <a href= <%= `/member/${elemen.id}/delete` %> >delete</a>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+
+
 </body>
 </html>

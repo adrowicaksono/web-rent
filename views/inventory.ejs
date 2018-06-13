@@ -1,30 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+       
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>inventories</title>
 </head>
 <body>
+    <%- include('../partial/header.ejs'); %>
     <h1>INVENTORIES</h1>
     <form method="POST" action="/inventory">
         <input type="text" name="jenis" placeholder="jenis"> <br> <br>
         <input type="text" name="serial_number" placeholder="serial number"> <br><br>
         <input type="text" name="kategori" placeholder="kategori"> <br><br>
+        <input type="text" name="harga_sewa" placeholder="harga sewa; ex: 500000"> <br><br>
         <input type="submit" value="SIMPAN"> <br> <br>
     </form>
 
 
 
-    <table>
+    <table class="table">
         <thead>
             <tr>
                 <td>
                     No
                 </td>
                 <td>
-                    Id Member
+                    ID Inventories
                 </td>
                 <td>
                     Jenis
@@ -36,14 +40,11 @@
                     Kategori
                 </td>
                 <td>
+                    Harga
+                </td>
+                <td>
                     Status
                 </td>
-                <td>
-                    Tanggal Pinjam
-                </td>
-                <td>
-                    Tanggal Kembali
-                </td>  
                 <td>
                     Action
                 </td>  
@@ -69,13 +70,10 @@
                         <%= elemen.kategori %>
                     </td>
                     <td>
+                        <%= formatUang(elemen.harga_sewa) %>
+                    </td>
+                    <td>
                         <%= elemen.status %>
-                    </td>
-                    <td>
-                        <%= elemen.tanggal_pinjam %>
-                    </td>
-                    <td>
-                        <%= elemen.tanggal_kembali %>
                     </td>
                     <td>
                         <a href= <%= `/inventory/${elemen.id}/edit` %> > edit </a> || <a href= <%= `/inventory/${elemen.id}/delete` %> >delete</a>

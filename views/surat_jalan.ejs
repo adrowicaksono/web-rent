@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+   
+    <h3><span style="float:right;margin-top:0px" class="badge badge-success">SURAT JALAN</span></h3>
+    <h1 style="margin-left:480px">Q-Tha Rent</h1>
+    <h4 ></h4>
+    <div class="container-fluid">
+    <h3>No Request : <%- transaction.id %> </h3>
+    <p>Nama : <%- transaction.Member.name %></p>
+    <p>alamat : <%- transaction.Member.alamat %></p>
+    <p>No Telpon : <%- transaction.Member.no_telpon %></p>
+    </div>
+  
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    No
+                </th>
+                <th>
+                    Tanggal Penggunaan
+                </th>
+                <th>
+                    Kategori
+                </th>
+                <th>
+                    Jenis
+                </th>
+                <th>
+                    Serial Number
+                </th>
+                <th>
+                    Harga
+                </th>       
+            </tr>
+        </thead>
+        <tbody>
+            <% transaction_details.forEach((elemen,idx)=>{ %>
+                <tr>
+                    <td><%- idx + 1 %></td>
+                    <td><%- `${formatTanggal(elemen.tanggal_pinjam)} s/d ${formatTanggal(elemen.tanggal_kembali)}` %></td>
+                    <td><%- elemen.Inventory.kategori %></td>
+                    <td><%- elemen.Inventory.jenis %></td>
+                    <td><%- elemen.Inventory.serial_number %></td>
+                    <td><%- formatUang(elemen.harga_sewa) %></td>
+                </tr>
+            <% }) %>
+            <tr>
+                <td></td> <td></td> <td></td> <td></td> <td></td><td><%- formatUang(transaction.total_harga_transaction) %></td>
+            </tr>
+        </tbody>
+    </table>
+    <p><strong>terbilang :</strong> <em><%- terbilang(transaction.total_harga_transaction) %> rupiah </em> </p>
+    <p></p>
+
+</body>
+</html>
