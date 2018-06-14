@@ -30,7 +30,9 @@ router.post('/', function(req, res){
     }
     if(msgError.length > 0){
         res.render('error', {err : msgError.join(', ')})
+        throw new Error('error input from member')
     }
+
     Member
     .create({
         name : req.body.name,

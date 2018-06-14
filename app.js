@@ -7,6 +7,7 @@ let inventory = require('./routes/routes_inventory.js')
 let member = require('./routes/routes_member.js')
 let transaction = require('./routes/routes_transaction.js')
 let stok = require('./routes/routes_stok.js')
+let opname = require('./routes/routes_opname.js')
 let quotation = require('./routes/routes_quotation.js')
 app.locals.formatUang = require('./helpers/formatCurrency.js')
 app.locals.formatTanggal = require('./helpers/formatTanggal.js')
@@ -30,6 +31,8 @@ app.use('/inventory', inventory)
 app.use('/transaction', transaction)
 
 app.use('/lihat_stok', stok)
+
+app.use('/stock_opname', opname)
 
 app.use('/quotation', quotation)
 

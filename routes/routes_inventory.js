@@ -46,19 +46,19 @@ router.post('/', function(req, res){
         if(serial_duplicate){
             throw new Error('duplicate serial number')
         }else{
-            // Inventory
-            // .create({
-            //     jenis : req.body.jenis,
-            //     serial_number : req.body.serial_number,
-            //     kategori : req.body.kategori,
-            //     harga_sewa : req.body.harga_sewa
-            // })
-            // .then(function(inventory){
-            //     res.redirect('/inventory')
-            // })
-            // .catch(function(err){
-            //     res.send(err)
-            // })
+            Inventory
+            .create({
+                jenis : req.body.jenis,
+                serial_number : req.body.serial_number,
+                kategori : req.body.kategori,
+                harga_sewa : req.body.harga_sewa
+            })
+            .then(function(inventory){
+                res.redirect('/inventory')
+            })
+            .catch(function(err){
+                res.send(err)
+            })
         }
     })
     .catch(function(errors){

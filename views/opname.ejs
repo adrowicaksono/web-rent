@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Q-tha Rent - Opname</title>
+</head>
+<body>
+        <%- include('../partial/header.ejs'); %>
+        <div class="container-fluid">
+            <h1 class="display-2">Q-Tha Rent</h1>   
+        </div>
+        <br>
+
+        <h2>DAFTAR OPNAME</h2>
+        <%- include('../partial/errors_partial')%>
+
+        <form style="margin-top:30px" action="/stock_opname" method="POST" id="form-filter">
+            <label for=""> <strong> Filter dengan tanggal : </strong> </label> <br>
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <input type="date" name="tanggal_awal" class="btn btn-secondary" >
+                <input type="date" name="tanggal_akhir" class="btn btn-secondary">
+                <input type="submit" value="filter" class="btn btn-primary">
+            </div>
+        </form>
+        <br>
+        <br>
+
+        <%- include('../partial/opname_all.ejs') %>
+
+    <button onclick="myFunction()"class="btn btn-warning" id="print">Print this page</button>
+
+    <script>
+
+    function myFunction() {
+        document.getElementById("print").style.visibility = "hidden";
+        document.getElementById("form-filter").style.visibility = "hidden";
+        document.getElementById("header-partial").style.visibility = "hidden";
+        window.print();
+    }
+    </script>
+</body>
+</html>

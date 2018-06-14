@@ -1,0 +1,79 @@
+<% if(typeof all_transaction_details !== 'undefined' ){  %>
+    <h3>Daftar Detail Order :</h3>
+    <table class="table">
+        <thead>
+            <th>No</th>
+            <th>Jenis</th>
+            <th>Serial Number</th>
+            <th>Sewa</th>
+            <th>Member</th>
+        </thead>
+        <tbody>
+            <% all_transaction_details.forEach((el,idx)=>{ %>
+                <tr>
+                    <td><%- idx+1 %></td>
+                    <td><%- el.Inventory.jenis %></td>
+                    <td><%- el.Inventory.serial_number %></td>
+                    <td><%- `${formatTanggal(el.tanggal_pinjam)} <strong>  s/d  </strong>  ${formatTanggal(el.tanggal_kembali)} `  %></td>
+                    <td><%- el.Transaction.Member.name %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+<% } %>
+<% if(typeof invent_in !== 'undefined' ){  %>
+    <h3> Opname Barang (Barang Didalam): </h3>
+    <table class="table">
+        <thead>
+            <th>No</th>
+            <th>Jenis</th>
+            <th>Serial Number</th>
+            <th>Detail</th>
+        </thead>
+        <tbody>
+            <% invent_in.forEach((el,idx)=>{ %>
+                <tr>
+                <td> <%- idx+1 %> </td>
+                <td><%- el.jenis %></td>
+                <td><%- el.serial_number %></td>
+                <td><% el.DetailTransactions.forEach((elemen,idx)=>{ %>
+                        <%- `<strong> durasi sewa :</strong>${formatTanggal(elemen.tanggal_pinjam)} <strong>s/d</strong> ${formatTanggal(elemen.tanggal_kembali)} <br>
+                             <strong> oleh : </strong>${elemen.Transaction.Member.name} <br> 
+                             <strong> tanggal order :</strong>${formatTanggal(elemen.Transaction.updatedAt)} `%>
+                    <% }) %>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+<% } %>
+
+<br> <br> <br>
+
+
+<% if(typeof invent_ex !== 'undefined' ){  %>
+    <h3> Opname Surat Jalan (Barang Keluar) : </h3>
+    <table class="table">
+        <thead>
+            <th>No</th>
+            <th>Jenis</th>
+            <th>Serial Number</th>
+            <th>Detail</th>
+        </thead>
+        <tbody>
+            <% invent_ex.forEach((el,idx)=>{ %>
+                <tr>
+                <td> <%- idx+1 %> </td>
+                <td><%- el.jenis %></td>
+                <td><%- el.serial_number %></td>
+                <td><% el.DetailTransactions.forEach((elemen,idx)=>{ %>
+                        <%- `<strong> durasi sewa :</strong>${formatTanggal(elemen.tanggal_pinjam)} <strong>s/d</strong> ${formatTanggal(elemen.tanggal_kembali)} <br>
+                             <strong> oleh : </strong>${elemen.Transaction.Member.name} <br> 
+                             <strong> tanggal order :</strong>${formatTanggal(elemen.Transaction.updatedAt)} `%>
+                    <% }) %>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+<% } %>

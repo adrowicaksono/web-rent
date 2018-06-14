@@ -167,7 +167,6 @@ router.post('/:id_transaction/add_inventory', function(req, res){
                 let invent_pinjam = e.tanggal_pinjam.getTime()
                 let invent_kembali = e.tanggal_kembali.getTime()
                 if(invent_kembali > tanggal_pinjam_getTime){
-                    console.log(invent_pinjam, invent_kembali, tanggal_pinjam_getTime)
                     if(invent_pinjam < tanggal_kembali_getTime){
                         tempInvent.push(e)
                     }
@@ -349,6 +348,10 @@ router.get('/:id_transaction/hapus_transaction', function(req, res){
     .then(function(transaction){
         res.redirect('/transaction')
     })
+})
+
+router.post('/:id_detail_transaction/hapus_detail_transaction', function(req,res){
+    res.send(req.params.id_detail_transaction)
 })
 
 router.get('/surat_jalan/:id_transaction', function(req, res){
