@@ -15,5 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     Inventory.hasMany(models.DetailTransaction)
     Inventory.belongsToMany(models.Transaction, {through:'DetailTransaction'})
   };
+
+  
   return Inventory;
 };

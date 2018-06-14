@@ -36,20 +36,46 @@ router.post('/', function(req, res){
         res.render('error', {err : msgError.join(', ')})
     }
     
-    Member
     Inventory
-    .create({
-        jenis : req.body.jenis,
-        serial_number : req.body.serial_number,
-        kategori : req.body.kategori,
-        harga_sewa : req.body.harga_sewa
+    .findOne({
+        where:{
+            serial_number:req.body.serial_number
+        }
     })
-    .then(function(inventory){
-        res.redirect('/inventory')
+    .then(function(serial_duplicate){
+        if(serial_duplicate){
+            throw new Error('duplicate serial number')
+        }else{
+            // Inventory
+            // .create({
+            //     jenis : req.body.jenis,
+            //     serial_number : req.body.serial_number,
+            //     kategori : req.body.kategori,
+            //     harga_sewa : req.body.harga_sewa
+            // })
+            // .then(function(inventory){
+            //     res.redirect('/inventory')
+            // })
+            // .catch(function(err){
+            //     res.send(err)
+            // })
+        }
     })
-    .catch(function(err){
-        res.send(err)
+    .catch(function(errors){
+        Inventory
+        .findAll({
+            order:[['id','asc']]
+        })
+        .then(function(inventories){
+            //res.send(invetories)
+            res.render('inventory', {inventories,errors})
+        })
+        .catch(function(err){
+            res.send(err)
+        })
     })
+   
+    
 })
 
 router.get('/:id/edit', function(req, res){

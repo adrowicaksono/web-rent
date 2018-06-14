@@ -9,16 +9,51 @@
 </head>
 <body>
     <%- include('../partial/header') %>
+   
+    
+    <h5><strong>Kategori :</strong></h5>
 
-    <form method="POST" action="/lihat_stok">
-        <input type="date" name="tanggal_pinjam">
-        <input type="date" name="tanggal_kembali">
-        <input type="submit" value="Goooo !!!">
+    <form method="POST" action="/lihat_stok/filter_kategori">
+    <div class="btn-group" role="group" aria-label="Basic example">
+            <select name="kategori" class="btn btn-secondary">
+                    <option>--pilih kategori--</option>
+                    <% kategories.forEach(el=>{ %>
+                        <option value="<%- el.kategori %>"> <%- el.kategori %> </option>
+                    <% }) %>
+            </select>
+            <input type="submit" value="pilih" class="btn btn-secondary">
+    </div>
     </form>
 
-    
-    
-  
+    <form style="margin-top:10px" method="POST" action="/lihat_stok">
+        <h5><strong>Jenis :</strong></h5>
+        <select name="jenis" class="btn btn-secondary">
+            <option>--pilih jenis alat--</option>
+            <% inventories.forEach(el=> { %>
+                <option value="<%- el.jenis %>"><%- el.jenis %></option>
+            <% }) %>
+        </select>
+        <br><br>
+        <h5><strong>Pilih tanggal :</strong></h5>
+        <input type="date" name="tanggal_pinjam"> s/d <input type="date" name="tanggal_kembali">
+        <input type="submit" value="Goooo !!!">
+    </form>
+    <br>
+    <%- include('../partial/search_by.ejs')%>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>No</th> <th> Jenis </th> <th>Serial Number</th> <th> Tanggal Order </th>
+            </tr>
+        </thead>
+        <tbody>
+            <% transaction_details.forEach((el, idx)=>{ %>
+                <tr>
+                    <td> <%- idx + 1 %> </td> <td> <%- el.Inventory.jenis %> </td> <td> <%- el.Inventory.serial_number %> </td> <td> <%- `${ formatTanggal(el.tanggal_pinjam) }<strong>    s/d   </strong>${ formatTanggal(el.tanggal_kembali) } ` %> </td>
+                </tr>
+            <% })%>
+        </tbody>
+    </table>    
     
 </body>
 </html>

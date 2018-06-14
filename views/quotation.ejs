@@ -60,6 +60,13 @@
     </table>
     <p><strong>terbilang :</strong> <em><%- terbilang(transaction.total_harga_transaction) %> rupiah </em> </p>
     <p></p>
+    <button onclick="myFunction()"class="btn btn-warning" id="print">Print this page</button>
 
+    <script>
+    function myFunction() {
+        document.getElementById("print").style.visibility = "hidden";
+        window.print();
+    }
+    </script>
 </body>
 </html>

@@ -8,10 +8,8 @@
     <title>Document</title>
 </head>
 <body>
-
-
-
     <%- include('../partial/header.ejs') %>
+    
     <br>
     <div class="alert alert-success">
     <label > Nama : <%= transaction.Member.name %> </label> <br>
@@ -40,45 +38,50 @@
             <tbody>
                 <tr>
                     <td>
+
                         <form method="POST" action="/transaction/<%= transaction.id %>/filter">
-                            <select name="kategori" >
-                                <option></option>
-                                <% kategories.forEach(elemen=>{ %>
-                                    <option value="<%- elemen.kategori %>"><%- elemen.kategori %> </option>
-                                    <% }) %>
-                            </select>
-                            <input type="submit" value=">">
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                    <select name="kategori" class="btn btn-secondary">
+                                            <option>--pilih kategori--</option>
+                                            <% kategories.forEach(el=>{ %>
+                                                <option value="<%- el.kategori %>"> <%- el.kategori %> </option>
+                                            <% }) %>
+                                    </select>
+                                    <input type="submit" value="pilih" class="btn btn-secondary">
+                            </div>
                         </form>
+
                     </td>
                     <td>
                     <form method="POST" action= <%= `/transaction/${transaction.id}/add_inventory ` %> >
                         <%- include('../partial/inventory_by_filter.ejs')%>                        
                     </td>
                     <td>
-                        <input type="date" name="tanggal_pinjam">
+                        <input type="date" name="tanggal_pinjam" class="btn btn-secondary">
                     </td>
                     <td>
-                        <input type="date" name="tanggal_kembali">
+                        <input type="date" name="tanggal_kembali"class="btn btn-secondary">
                     </td>
                     <td>
-                        <input type="submit" value="tambahkan">
+                        <input type="submit" value="tambahkan" class="btn btn-secondary">
                     </form>
                     </td>
                 </tr>
             </tbody>
         </table>
-       
+    <%- include('../partial/errors_partial')%>
     <%- include('../partial/detail_transaction.ejs') %>
     
     <br>
-
+   
     <form method="POST" action="/transaction/<%- transaction.id %>/simpan_transaksi" style="float:left; border:1px">
-        <input type="submit" value="SIMPAN">
+        <input type="submit" value="SIMPAN" class="btn btn-secondary">
     </form>
 
     <form method="POST" action= <%- ` /transaction/${transaction.id}/rollback_detail_transaction ` %> >
-        <input type="submit" value="BATAL">
+        <input type="submit" value="BATAL" class="btn btn-secondary">
     </form>
+   
 
 <script>
     var x = document.getElementById("kategori").value
