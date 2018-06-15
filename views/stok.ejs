@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Q-tha Rent - STOCK</title>
 </head>
 <body>
     <%- include('../partial/header') %>
@@ -27,12 +27,13 @@
 
     <form style="margin-top:10px" method="POST" action="/lihat_stok">
         <h5><strong>Jenis :</strong></h5>
-        <select name="jenis" class="btn btn-secondary">
+        <input list="jenis"  name="jenis" class="btn btn-secondary">
+        <datalist id="jenis" >
             <option>--pilih jenis alat--</option>
             <% inventories.forEach(el=> { %>
                 <option value="<%- el.jenis %>"><%- el.jenis %></option>
             <% }) %>
-        </select>
+        </datalist>
         <br><br>
         <h5><strong>Pilih tanggal :</strong></h5>
         <input type="date" name="tanggal_pinjam"> s/d <input type="date" name="tanggal_kembali">
@@ -40,6 +41,7 @@
     </form>
     <br>
     <%- include('../partial/search_by.ejs')%>
+    <h2>All Items :</h2>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -52,8 +54,48 @@
                     <td> <%- idx + 1 %> </td> <td> <%- el.Inventory.jenis %> </td> <td> <%- el.Inventory.serial_number %> </td> <td> <%- `${ formatTanggal(el.tanggal_pinjam) }<strong>    s/d   </strong>${ formatTanggal(el.tanggal_kembali) } ` %> </td>
                 </tr>
             <% })%>
+           
         </tbody>
     </table>    
-    
+    <% if(typeof exhouse  !== 'undefined'){ %>
+        <h2>not ready items : </h2>
+        <br>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>No</th> <th> Jenis </th> <th>Serial Number</th> <th> Tanggal Order </th>
+                </tr>
+            </thead>
+            <tbody>
+                <% exhouse.forEach((el, idx)=>{ %>
+                    <tr>
+                        <td> <%- idx + 1 %> </td> <td> <%- el.Inventory.jenis %> </td> <td> <%- el.Inventory.serial_number %> </td> <td> <%- `${ formatTanggal(el.tanggal_pinjam) }<strong>    s/d   </strong>${ formatTanggal(el.tanggal_kembali) } ` %> </td>
+                    </tr>
+                <% })%>
+               
+            </tbody>
+        </table>  
+    <% } %>
+
+    <% if(typeof inhouse  !== 'undefined'){ %>
+        
+        <h2>ready items :</h2>
+        <br>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>No</th> <th> Jenis </th> <th>Serial Number</th> <th> Tanggal Order </th>
+                </tr>
+            </thead>
+            <tbody>
+                <% inhouse.forEach((el, idx)=>{ %>
+                    <tr>
+                        <td> <%- idx + 1 %> </td> <td> <%- el.Inventory.jenis %> </td> <td> <%- el.Inventory.serial_number %> </td> <td> <%- `${ formatTanggal(el.tanggal_pinjam) }<strong>    s/d   </strong>${ formatTanggal(el.tanggal_kembali) } ` %> </td>
+                    </tr>
+                <% })%>
+               
+            </tbody>
+        </table>
+    <% } %>
 </body>
 </html>

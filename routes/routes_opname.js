@@ -68,7 +68,7 @@ router.post('/',function(req,res){
                     attributes:['id','updatedAt'],
                 }
             },
-            order:[['id', 'asc']]
+            order:[['jenis', 'asc']]
         })
         .then(function(inventories){
             let invent_in = []

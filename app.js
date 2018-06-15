@@ -9,6 +9,7 @@ let transaction = require('./routes/routes_transaction.js')
 let stok = require('./routes/routes_stok.js')
 let opname = require('./routes/routes_opname.js')
 let quotation = require('./routes/routes_quotation.js')
+let imports = require('./routes/routes_import.js')
 app.locals.formatUang = require('./helpers/formatCurrency.js')
 app.locals.formatTanggal = require('./helpers/formatTanggal.js')
 app.locals.terbilang = require('./helpers/terbilang.js')
@@ -35,5 +36,7 @@ app.use('/lihat_stok', stok)
 app.use('/stock_opname', opname)
 
 app.use('/quotation', quotation)
+
+app.use('/import', imports)
 
 app.listen(port,console.log('listening on port 3000')) 

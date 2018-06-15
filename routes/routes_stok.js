@@ -53,11 +53,12 @@ router.post('/filter_kategori', function(req, res){
     .then(function(kategories){
         Inventory
         .findAll({
+            attributes:['jenis'],
             where:{
                 kategori : req.body.kategori
             },
             order:[['jenis','asc']],
-            //group:'jenis'
+            group:'jenis',
         })
         .then(function(inventories){
             DetailTransaction
@@ -91,9 +92,9 @@ router.post('/', function(req,res){
     filter.push(req.body.jenis)
     let tanggal_pinjam =new Date (req.body.tanggal_pinjam)
     let tanggal_kembali =new Date (req.body.tanggal_kembali)
-    let timeStampPinjam = tanggal_pinjam.getTime()
-    let timeStampKembali = tanggal_kembali.getTime()
-
+    let tanggal_pinjam_getTime = tanggal_pinjam.getTime()
+    let tanggal_kembali_getTime = tanggal_kembali.getTime()
+    
     Inventory
     .findAll({
         attributes:['kategori'],
@@ -104,14 +105,11 @@ router.post('/', function(req,res){
             where:{
                 jenis : req.body.jenis
             },
-            order:[['jenis','asc']]
+            order:[['jenis','asc']],
         })
         .then(function(inventories){
             DetailTransaction
                 .findAll({
-                    where:{
-                        tanggal_pinjam:{[Op.between]:[tanggal_pinjam, tanggal_kembali]},
-                    },
                     include:[{
                         model : Inventory,
                         where : {
@@ -121,7 +119,26 @@ router.post('/', function(req,res){
                     }]
                 })
                 .then(function(transaction_details){
-                    res.render('stok', {kategories, inventories, transaction_details, search: filter})
+
+                    let exhouse = []
+                    let inhouse = []
+        
+                    transaction_details.forEach(el =>{
+                        let dtl_pinjam = el.tanggal_pinjam.getTime()
+                        let dtl_kembali = el.tanggal_kembali.getTime()
+                        if(dtl_kembali >= tanggal_pinjam_getTime){
+                            if(dtl_pinjam <= tanggal_kembali_getTime){
+                                exhouse.push(el)
+                            }else{
+                                inhouse.push(el)
+                            }
+                        }else{
+                            inhouse.push(el)
+                        }
+                    })
+                    
+
+                    res.render('stok', {inhouse,exhouse, kategories, inventories, transaction_details, search: filter})
                 })      
         })
         .catch(function(err){
