@@ -11,12 +11,19 @@
     <%- include('../partial/header.ejs'); %>
     <h1>Member Updated</h1>
     <h2> member no. id : <%= member.id %> </h2>
-    <form method="POST" action=<%= `/member/${member.id}/edit` %> >
+    <div>
+    <form method="POST" action= "/member/<%- member.id %>/edit" >
         <input type="text" value= "<%= member.name %>"  placeholder="name" name="name"> <br> <br>
         <input type="text" value= "<%= member.alamat %>" placeholder="alamat" name="alamat" > <br> <br>
         <input type="text" value= "<%= member.no_telpon %>" placeholder="no_telpon" name="no_telpon"> <br> <br>
+        <input type="text" value= "<%= member.email %>" placeholder="email" name="email"> <br> <br>
+        <input type="text" value= "<%= member.role %>" placeholder="role" name="role"> <br> <br>
         <input type="text" value= "<%= member.data_scan %>" placeholder="data_scan" name="data_scan"> <br> <br>
         <input type="submit" value="UPDATE">
     </form>
+    <form method="GET" action="/member">
+        <input type="submit" value="BACK">
+    </form>
+</div>
 </body>
 </html>

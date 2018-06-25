@@ -1,6 +1,6 @@
 <% if(typeof inventories !== 'undefined'){ %>
     <select name="inventory_id" class="btn btn-secondary">
-        <option>--Pilih Jenis Alat--</option>
+        <option value="undefined">--Pilih Jenis Alat--</option>
     <% inventories.forEach((elemen, idx)=>{ %>
             <option value="<%- elemen.id %>"><%-`${elemen.jenis} --- S/N: ${elemen.serial_number}  `%></option>
     <% }) %>

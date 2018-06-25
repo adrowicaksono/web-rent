@@ -8,7 +8,17 @@
     <title>Q-tha Rent - HOME</title>
 </head>
 <body>
-    <h1 class="display-1" style="margin:200px;margin-left:30%;">Q-Tha Rent</h1>
     <%- include('../partial/header') %>
+        <div style="margin-left:29%;padding-top:200px">
+            <h1 class="display-1" >Q-Tha Rent</h1>
+            <form method="POST" action="/auth" id="auth">
+                <%- include('../partial/errors_partial.ejs') %>
+                <input type="text" name="email" placeholder="email">
+                <input type="text" name="password" placeholder="password">
+                <input type="submit" value="SIGN IN">
+            </form>
+        <p>validasi member not null,validasi email uniq when create and update</p>
+    </div>
+
 </body>
 </html>

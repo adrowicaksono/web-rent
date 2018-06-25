@@ -7,8 +7,15 @@ const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 
 
-router.get('/', function(req, res){
-   
+router.get('/', function(req,res,next){
+    let user = req.session.current_user
+    if(user){
+        next()
+    }else{
+        res.render("home", {errors:{message:"bukan member"}})
+    }
+},function(req, res){
+    let user = req.session.current_user
     Inventory
         .findAll({
             attributes:['kategori'],
@@ -26,7 +33,7 @@ router.get('/', function(req, res){
                     include:Inventory
                 })
                 .then(function(transaction_details){
-                    res.render('stok', {kategories, inventories, transaction_details})
+                    res.render('stok', {user,kategories, inventories, transaction_details})
                 })      
             })
             .catch(function(err){
@@ -35,7 +42,15 @@ router.get('/', function(req, res){
         })
 })
 
-router.post('/filter_kategori', function(req, res){
+router.post('/filter_kategori', function(req,res,next){
+    let user = req.session.current_user
+    if(user){
+        next()
+    }else{
+        res.render("home", {errors:{message:"bukan member"}})
+    }
+},function(req, res){
+    let user = req.session.current_user
     let msgError = []
     if(!req.body.kategori){
         msgError.push('pilih kategori dulu bang !!')
@@ -66,7 +81,7 @@ router.post('/filter_kategori', function(req, res){
                     include:Inventory
                 })
                 .then(function(transaction_details){
-                    res.render('stok', {kategories, inventories, transaction_details})
+                    res.render('stok', {user,kategories, inventories, transaction_details})
                 })      
         })
         .catch(function(err){
@@ -75,7 +90,15 @@ router.post('/filter_kategori', function(req, res){
     })
 })
 
-router.post('/', function(req,res){
+router.post('/', function(req,res,next){
+    let user = req.session.current_user
+    if(user){
+        next()
+    }else{
+        res.render("home", {errors:{message:"bukan member"}})
+    }
+},function(req,res){
+    let user = req.session.current_user
     let msgError = []
     if(!req.body.tanggal_pinjam || !req.body.tanggal_kembali ){
         msgError.push('isi tanggal dulu bang !!')
@@ -122,12 +145,12 @@ router.post('/', function(req,res){
 
                     let exhouse = []
                     let inhouse = []
-        
+                    
                     transaction_details.forEach(el =>{
                         let dtl_pinjam = el.tanggal_pinjam.getTime()
                         let dtl_kembali = el.tanggal_kembali.getTime()
-                        if(dtl_kembali >= tanggal_pinjam_getTime){
-                            if(dtl_pinjam <= tanggal_kembali_getTime){
+                        if(dtl_kembali > tanggal_pinjam_getTime){
+                            if(dtl_pinjam < tanggal_kembali_getTime){
                                 exhouse.push(el)
                             }else{
                                 inhouse.push(el)
@@ -136,9 +159,14 @@ router.post('/', function(req,res){
                             inhouse.push(el)
                         }
                     })
+                    if(exhouse.length === 0){
+                        filter.push(`ALAT SIAP DIORDER !!!`)
+                    }else{
+                        filter.push(`ALAT SEDANG DALAM ORDER !!!`)
+                    }
                     
 
-                    res.render('stok', {inhouse,exhouse, kategories, inventories, transaction_details, search: filter})
+                    res.render('stok', {user,inhouse,exhouse, kategories, inventories, transaction_details, search: filter})
                 })      
         })
         .catch(function(err){

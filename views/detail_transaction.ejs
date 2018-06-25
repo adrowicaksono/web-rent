@@ -9,14 +9,12 @@
 </head>
 <body>
     <%- include('../partial/header.ejs') %>
-    
     <br>
     <div class="alert alert-success">
     <label > Nama : <%= transaction.Member.name %> </label> <br>
     <label > No Telp : <%= transaction.Member.no_telpon %> </label> <br>
     <label > No Request : <%= transaction.id %> </label> <br>
     </div>
-    
         <table class="table">
             <thead>
                 <td>
@@ -75,7 +73,7 @@
     <br>
    
     <form method="POST" action="/transaction/<%- transaction.id %>/simpan_transaksi" style="float:left; border:1px">
-        <input type="submit" value="SIMPAN" class="btn btn-secondary">
+        <input type="submit" value="PROSES" class="btn btn-secondary">
     </form>
 
     <form method="POST" action= <%- ` /transaction/${transaction.id}/rollback_detail_transaction ` %> >
