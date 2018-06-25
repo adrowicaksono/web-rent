@@ -1,5 +1,5 @@
 //require
-const port = 3000;
+const port = process.env.PORT || 4000;
 const express = require('express');
 const app = express();
 const session = require('express-session');
@@ -57,4 +57,4 @@ app.use('/auth', auth)
 
 
 
-app.listen(port,console.log('listening on port 3000')) 
+app.listen(port,console.log('listening on port 4000')) 
