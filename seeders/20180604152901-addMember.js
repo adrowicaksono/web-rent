@@ -13,6 +13,14 @@ module.exports = {
       }], {});
     */
       return queryInterface.bulkInsert('Members', [{
+        name : 'admin',
+        alamat : 'Jl. Tebet Timur Dalam 2',
+        no_telpon : '0821111111',
+        email : 'admin@admin.com',
+        password : '$2b$08$nH6yYErcdoYSoaOhKC/j6uRrv78Js9JbfzTzJN6IiwmWRI/zyER/C',
+        salt : '$2b$08$nH6yYErcdoYSoaOhKC/j6u',
+        role : 'admin',
+      },{
         name : 'Didit',
         alamat : 'Jl. Tebet Timur Dalam 2',
         no_telpon : '0823456789',
