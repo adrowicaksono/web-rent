@@ -6,11 +6,8 @@
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
-  "production":{
-    "username" :"jmfnxenckvvuho",
-    "password" :"55bee6c0425aeeaebd36e76110ce021b4afcd28b42f7acba08041b25b2aea841",
-    "database" :"da3511hln1bqvo",
-    "host" : "ec2-54-235-70-253.compute-1.amazonaws.com",
-    "dialect" : "postgres"     
+  "production": {
+    "use_env_variable": "DATABASE_URL",
+    "dialect": "postgres"
   }
 }
