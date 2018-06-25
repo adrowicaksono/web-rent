@@ -8,19 +8,44 @@ const Inventory = model.Inventory
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 
-router.get('/', function(req, res){
+router.get('/',function(req,res,next){
+    let user = req.session.current_user
+    
+    if(user){
+        next()
+    }else{
+        res.render("home", {errors:{message:"belom login"}})
+    }
+} ,function(req, res){
+   let user = req.session.current_user
    Transaction
    .findAll({
        include: Member,
        order:[['updatedAt','desc']]
    })
    .then(function(transactions){
-       res.render('transaction', {transactions})
+       if(user.role === "admin"){
+               res.render('transaction', {user,transactions})
+       }else{
+           res.render('transaction', {user,transactions, errors:{message:"bukan admin"}})
+       }
    })
 })
 
 
-router.post('/', function(req, res){
+router.post('/', function(req,res,next){
+    let user = req.session.current_user
+    if(user){
+        if(user.role === "admin"){
+            next()
+        }else{
+            res.redirect("/transaction")
+        }
+    }else{
+        res.render("home", {errors:{message:"belom login"}})
+    }
+},function(req, res){
+    let user = req.session.current_user
     let memberId = req.body.MemberId 
         Member
         .findById(memberId)
@@ -50,22 +75,42 @@ router.post('/', function(req, res){
                                 include:Inventory
                             })
                             .then(function(transaction_details){
-                                res.render('detail_transaction', {transaction, kategories, inventories, transaction_details})
+                                res.render('detail_transaction', {user,transaction, kategories, inventories, transaction_details})
                             })  
                         })
                     })
                 })
           })
           .catch(function(err){
-              res.send('member id salah')
+            console.log(err.message)
+            res.send('kesalahan dalam melakukan order')
           }) 
         })
         .catch(function(err){
-           res.send('Member tidak terdaftar')
-        })  
+            Transaction
+            .findAll({
+                include: Member,
+                order:[['updatedAt','desc']]
+            })
+            .then(function(transactions){
+                    res.render('transaction', {user,transactions, errors:{message:"member tidak terdaftar"}})
+            })
+          })  
 })
 
-router.get('/:id_transaction/lihat_detail_transaction', function(req,res){
+router.get('/:id_transaction/lihat_detail_transaction', function(req,res,next){
+    let user = req.session.current_user
+    if(user){
+        if(user.role === "admin"){
+            next()
+        }else{
+            res.redirect("/transaction")
+        }
+    }else{
+        res.render("home", {errors:{message:"belom login"}})
+    }
+},function(req,res){
+    let user = req.session.current_user
     Transaction
     .findOne({
         where :{id:req.params.id_transaction},
@@ -86,20 +131,42 @@ router.get('/:id_transaction/lihat_detail_transaction', function(req,res){
                     include:Inventory
                 })
                 .then(function(transaction_details){
-                    res.render('detail_transaction', {transaction, kategories, inventories, transaction_details})
+                    if(req.session.errors_add_inventory){
+                        let msgError = req.session.errors_add_inventory
+                        delete req.session.errors_add_inventory
+                        res.render('detail_transaction', {errors:{message:msgError},user,transaction, kategories, inventories, transaction_details})
+                    }else{
+                        res.render('detail_transaction', {user,transaction, kategories, inventories, transaction_details})
+
+                    }
                 })   
             })
             .catch(function(err){
-                res.send('belum pilih kategori')
+                console.log(err)
+                res.redirect(`/${req.params.id_transaction}/lihat_detail_transaction`)
+                // res.send('belum pilih kategori')
             })
         })
     })
     .catch(function(err){
-        res.send(err)
+        console.log(err)
+        res.redirect(`/${req.params.id_transaction}/lihat_detail_transaction`)
     })
 })
 
-router.post('/:id_transaction/filter', function(req, res){
+router.post('/:id_transaction/filter', function(req,res,next){
+    let user = req.session.current_user
+    if(user){
+        if(user.role === "admin"){
+            next()
+        }else{
+            res.redirect("/transaction")
+        }
+    }else{
+        res.render("home", {errors:{message:"belom login"}})
+    }
+},function(req, res){
+    let user = req.session.current_user
     Transaction
     .findOne({
         where :{id:req.params.id_transaction},
@@ -125,7 +192,7 @@ router.post('/:id_transaction/filter', function(req, res){
                     include:Inventory
                 })
                 .then(function(transaction_details){
-                    res.render('detail_transaction', {transaction, kategories, inventories, transaction_details})
+                    res.render('detail_transaction', {user,transaction, kategories, inventories, transaction_details})
                 })   
             })
             .catch(function(err){
@@ -138,132 +205,171 @@ router.post('/:id_transaction/filter', function(req, res){
     })
 })
 
-router.post('/:id_transaction/add_inventory', function(req, res){
+router.post('/:id_transaction/add_inventory', function(req,res,next){
+    let user = req.session.current_user
+    if(user){
+        if(user.role === "admin"){
+            next()
+        }else{
+            res.redirect("/transaction")
+        }
+    }else{
+        res.render("home", {errors:{message:"belom login"}})
+    }
+},function(req, res, next){
+    let msgError = []
+    if(req.body.inventory_id === "undefined"){
+        msgError.push("belom pilih jenis alat")
+    }
+    if(!req.body.tanggal_pinjam){
+        msgError.push("belom pilih tanggal pinjam")
+    }
+    if(!req.body.tanggal_kembali){
+        msgError.push("belom pilih tanggal kembali")
+    }
+    if(msgError.length > 0){
+        req.session.errors_add_inventory = msgError
+        res.redirect(`/transaction/${req.params.id_transaction}/lihat_detail_transaction`)
 
-    let satuHari = 24*60*60*1000
-    let tanggal_pinjam = new Date(req.body.tanggal_pinjam)
-    let tanggal_kembali = new Date(req.body.tanggal_kembali)
-    let tanggal_pinjam_getTime = tanggal_pinjam.getTime()
-    let tanggal_kembali_getTime = tanggal_kembali.getTime()
-    let durasi_sewa = Math.round(Math.abs(tanggal_pinjam.getTime() - tanggal_kembali.getTime())/satuHari)
-
-    Inventory
-    .findOne({
-        attributes:['harga_sewa'],
-        where:{id:req.body.inventory_id}
-    })
-    .then(function(harga){
-        let total_sewa = durasi_sewa*harga.harga_sewa
-        DetailTransaction
-        .findAll({
-            where:{
-                InventoryId:req.body.inventory_id
-            }
+    }else{
+        let user = req.session.current_user
+        let satuHari = 24*60*60*1000
+        let tanggal_pinjam = new Date(req.body.tanggal_pinjam)
+        let tanggal_kembali = new Date(req.body.tanggal_kembali)
+        let tanggal_pinjam_getTime = tanggal_pinjam.getTime()
+        let tanggal_kembali_getTime = tanggal_kembali.getTime()
+        let durasi_sewa = Math.round(Math.abs(tanggal_pinjam.getTime() - tanggal_kembali.getTime())/satuHari)
+    
+        Inventory
+        .findOne({
+            attributes:['harga_sewa'],
+            where:{id:req.body.inventory_id}
         })
-        .then(function(inventori_list){
-            
-            let tempInvent = []
-            inventori_list.forEach(e =>{
-                let invent_pinjam = e.tanggal_pinjam.getTime()
-                let invent_kembali = e.tanggal_kembali.getTime()
-                if(invent_kembali > tanggal_pinjam_getTime){
-                    if(invent_pinjam < tanggal_kembali_getTime){
-                        tempInvent.push(e)
-                    }
+        .then(function(harga){
+            let total_sewa = durasi_sewa*harga.harga_sewa
+            DetailTransaction
+            .findAll({
+                where:{
+                    InventoryId:req.body.inventory_id
                 }
             })
-
-            if(tempInvent.length > 0){
-                throw new Error('item sudah di booking ')
-            }else{
-                //res.send('lanjuttt')
-                //=========================================================
-                DetailTransaction
-                .create({
-                    TransactionId : req.params.id_transaction,
-                    InventoryId : req.body.inventory_id,
-                    tanggal_pinjam : tanggal_pinjam,
-                    tanggal_kembali : tanggal_kembali,
-                    harga_sewa : total_sewa
+            .then(function(inventori_list){
+                
+                let tempInvent = []
+                inventori_list.forEach(e =>{
+                    let invent_pinjam = e.tanggal_pinjam.getTime()
+                    let invent_kembali = e.tanggal_kembali.getTime()
+                    if(invent_kembali > tanggal_pinjam_getTime){
+                        if(invent_pinjam < tanggal_kembali_getTime){
+                            tempInvent.push(e)
+                        }
+                    }
                 })
-                //========================================================
-                .then(function(detail_transaction){
-                    Transaction
-                    .findOne({
-                        where :{id:req.params.id_transaction},
-                        include:Member
+    
+                if(tempInvent.length > 0){
+                    throw new Error('item sudah di booking ')
+                }else{
+                    //res.send('lanjuttt')
+                    //=========================================================
+                    DetailTransaction
+                    .create({
+                        TransactionId : req.params.id_transaction,
+                        InventoryId : req.body.inventory_id,
+                        tanggal_pinjam : tanggal_pinjam,
+                        tanggal_kembali : tanggal_kembali,
+                        harga_sewa : total_sewa
                     })
-                    .then(function(transaction){
-                        Inventory
-                        .findAll({
-                            attributes:['kategori'],
-                            group:'kategori'})
-                        .then(function(kategories){
+                    //========================================================
+                    .then(function(detail_transaction){
+                        Transaction
+                        .findOne({
+                            where :{id:req.params.id_transaction},
+                            include:Member
+                        })
+                        .then(function(transaction){
                             Inventory
                             .findAll({
-                            })
-                            .then(function(inventories){
-                                DetailTransaction
+                                attributes:['kategori'],
+                                group:'kategori'})
+                            .then(function(kategories){
+                                Inventory
                                 .findAll({
-                                    where:{TransactionId:req.params.id_transaction},
-                                    include:Inventory
                                 })
-                                .then(function(transaction_details){
-                                    res.render('detail_transaction', {transaction, kategories, inventories, transaction_details})
+                                .then(function(inventories){
+                                    DetailTransaction
+                                    .findAll({
+                                        where:{TransactionId:req.params.id_transaction},
+                                        include:Inventory
+                                    })
+                                    .then(function(transaction_details){
+                                        res.render('detail_transaction', {user,transaction, kategories, inventories, transaction_details})
+                                    })
                                 })
                             })
                         })
+                        .catch(function(err){
+                            res.send(err)
+                        })    
                     })
                     .catch(function(err){
                         res.send(err)
-                    })    
+                    })
+                }
+            })
+            .catch(function(errors){
+                //res.send(errors.message)
+                Transaction
+                .findOne({
+                    where :{id:req.params.id_transaction},
+                    include:Member
+                })
+                .then(function(transaction){
+                    Inventory
+                    .findAll({
+                        attributes:['kategori'],
+                        group:'kategori'})
+                    .then(function(kategories){
+                        Inventory
+                        .findAll({
+                        })
+                        .then(function(inventories){
+                            DetailTransaction
+                            .findAll({
+                                where:{TransactionId:req.params.id_transaction},
+                                include:Inventory
+                            })
+                            .then(function(transaction_details){
+                                res.render('detail_transaction', {transaction, kategories, inventories, transaction_details,errors})
+                            })
+                        })
+                    })
                 })
                 .catch(function(err){
                     res.send(err)
                 })
-            }
+            })
         })
         .catch(function(errors){
-            //res.send(errors.message)
-            Transaction
-            .findOne({
-                where :{id:req.params.id_transaction},
-                include:Member
-            })
-            .then(function(transaction){
-                Inventory
-                .findAll({
-                    attributes:['kategori'],
-                    group:'kategori'})
-                .then(function(kategories){
-                    Inventory
-                    .findAll({
-                    })
-                    .then(function(inventories){
-                        DetailTransaction
-                        .findAll({
-                            where:{TransactionId:req.params.id_transaction},
-                            include:Inventory
-                        })
-                        .then(function(transaction_details){
-                            res.render('detail_transaction', {transaction, kategories, inventories, transaction_details,errors})
-                        })
-                    })
-                })
-            })
-            .catch(function(err){
-                res.send(err)
-            })
+            res.send(err.message)
+    
         })
-    })
-    .catch(function(errors){
-        res.send(err.message)
-
-    })
+    }
     
 })
 
-router.post('/filter_by_date', function(req,res){
+router.post('/filter_by_date', function(req,res,next){
+    let user = req.session.current_user
+    if(user){
+        if(user.role === "admin"){
+            next()
+        }else{
+            res.redirect("/transaction")
+        }
+    }else{
+        res.render("home", {errors:{message:"belom login"}})
+    }
+},function(req,res){
+    let user = req.session.current_user
     let startDate = new Date(req.body.startDate)
     let endDate = new Date(req.body.endDate)
     
@@ -278,14 +384,25 @@ router.post('/filter_by_date', function(req,res){
         order : [['createdAt', 'asc']]
     })
     .then(function(transactions){
-        res.render('transaction', {transactions})
+        res.render('transaction', {user,transactions})
     })
     .catch(function(err){
         res.render('error',{err:'masukan tanggalnya bos'})
     })
 })
 
-router.post('/:id_transaction/simpan_transaksi',function(req,res){
+router.post('/:id_transaction/simpan_transaksi',function(req,res,next){
+    let user = req.session.current_user
+    if(user){
+        if(user.role === "admin"){
+            next()
+        }else{
+            res.redirect("/transaction")
+        }
+    }else{
+        res.render("home", {errors:{message:"belom login"}})
+    }
+},function(req,res){
     //update total transaksi
     DetailTransaction
     .findAll({
@@ -315,7 +432,18 @@ router.post('/:id_transaction/simpan_transaksi',function(req,res){
     })
 })
 
-router.post('/:id_transaction/rollback_detail_transaction', function(req, res){
+router.post('/:id_transaction/rollback_detail_transaction', function(req,res,next){
+    let user = req.session.current_user
+    if(user){
+        if(user.role === "admin"){
+            next()
+        }else{
+            res.redirect("/transaction")
+        }
+    }else{
+        res.render("home", {errors:{message:"belom login"}})
+    }
+},function(req, res){
 
     DetailTransaction
     .destroy({
@@ -337,20 +465,50 @@ router.post('/:id_transaction/rollback_detail_transaction', function(req, res){
     })
 })
 
-router.get('/:id_transaction/hapus_transaction', function(req, res){
-    
-    Transaction
+router.get('/:id_transaction/hapus_transaction', function(req,res,next){
+    let user = req.session.current_user
+    if(user){
+        if(user.role === "admin"){
+            next()
+        }else{
+            res.redirect("/transaction")
+        }
+    }else{
+        res.render("home", {errors:{message:"belom login"}})
+    }
+},function(req, res){
+    //tidak mau auto delete di detail transaction
+    DetailTransaction
     .destroy({
         where:{
-            id:req.params.id_transaction
+            TransactionId:req.params.id_transaction
         }
     })
-    .then(function(transaction){
-        res.redirect('/transaction')
+    .then(function(detailTransaction){
+        Transaction
+        .destroy({
+            where:{
+                id:req.params.id_transaction
+            }
+        })
+        .then(function(transaction){
+            res.redirect('/transaction')
+        })
     })
 })
 
-router.post('/:id_detail_transaction/hapus_detail_transaction', function(req,res){
+router.post('/:id_detail_transaction/hapus_detail_transaction', function(req,res,next){
+    let user = req.session.current_user
+    if(user){
+        if(user.role === "admin"){
+            next()
+        }else{
+            res.redirect("/transaction")
+        }
+    }else{
+        res.render("home", {errors:{message:"belom login"}})
+    }
+},function(req,res){
     res.send(req.params.id_detail_transaction)
 })
 

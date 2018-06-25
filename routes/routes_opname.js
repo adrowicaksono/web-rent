@@ -7,7 +7,15 @@ const Inventory = model.Inventory
 const Member = model.Member
 
 
-router.get('/', function(req,res){
+router.get('/', function(req,res,next){
+    let user = req.session.current_user
+    if(user){
+        next()
+    }else{
+        res.render("home", {errors:{message:"bukan member"}})
+    }
+},function(req,res){
+    let user = req.session.current_user
     DetailTransaction
     .findAll({
         attributes:['id','tanggal_pinjam', 'tanggal_kembali'],
@@ -16,11 +24,19 @@ router.get('/', function(req,res){
         order:[['tanggal_pinjam','desc']]
     })
     .then(function(all_transaction_details){
-        res.render('opname', {all_transaction_details})
+        res.render('opname', {all_transaction_details,user})
     })
 })
 
-router.post('/',function(req,res){
+router.post('/',function(req,res,next){
+    let user = req.session.current_user
+    if(user){
+        next()
+    }else{
+        res.render("home", {errors:{message:"bukan member"}})
+    }
+},function(req,res){
+    let user = req.session.current_user
     let msgError = []
     if(!req.body.tanggal_awal || !req.body.tanggal_akhir){
         res.render('error', {err:"masukan tanggal dulu bosque"})
@@ -58,7 +74,7 @@ router.post('/',function(req,res){
             attributes:['id','jenis','serial_number'],
             include:{
                 model:DetailTransaction,
-                attributes:['TransactionId','tanggal_pinjam','tanggal_kembali'],
+                attributes:['id','TransactionId','InventoryId','tanggal_pinjam','tanggal_kembali'],
                 include:{
                     model:Transaction,
                     include:{
@@ -66,9 +82,9 @@ router.post('/',function(req,res){
                         attributes:['name'],
                     },
                     attributes:['id','updatedAt'],
-                }
+                },
             },
-            order:[['jenis', 'asc']]
+            order:[['id', 'asc']]
         })
         .then(function(inventories){
             let invent_in = []
@@ -82,7 +98,7 @@ router.post('/',function(req,res){
                     invent_in.push(el)
                 }
             })
-            res.render('opname',{invent_in, invent_ex, tanggal_akhir, tanggal_awal})
+            res.render('opname',{invent_in, invent_ex, tanggal_akhir, tanggal_awal,user})
         })
         //res.render('opname', {filter_transaction_details})
     })

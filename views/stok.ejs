@@ -41,7 +41,7 @@
     </form>
     <br>
     <%- include('../partial/search_by.ejs')%>
-    <h2>All Items :</h2>
+    <h2>All Orders :</h2>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -58,44 +58,47 @@
         </tbody>
     </table>    
     <% if(typeof exhouse  !== 'undefined'){ %>
-        <h2>not ready items : </h2>
-        <br>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>No</th> <th> Jenis </th> <th>Serial Number</th> <th> Tanggal Order </th>
-                </tr>
-            </thead>
-            <tbody>
-                <% exhouse.forEach((el, idx)=>{ %>
+        <% if(exhouse.length > 0){ %>
+            <h2>alat sedang dalam order : </h2>
+            <br>
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td> <%- idx + 1 %> </td> <td> <%- el.Inventory.jenis %> </td> <td> <%- el.Inventory.serial_number %> </td> <td> <%- `${ formatTanggal(el.tanggal_pinjam) }<strong>    s/d   </strong>${ formatTanggal(el.tanggal_kembali) } ` %> </td>
+                        <th>No</th> <th> Jenis </th> <th>Serial Number</th> <th> Tanggal Order </th>
                     </tr>
-                <% })%>
-               
-            </tbody>
-        </table>  
+                </thead>
+                <tbody>
+                    <% exhouse.forEach((el, idx)=>{ %>
+                        <tr>
+                            <td> <%- idx + 1 %> </td> <td> <%- el.Inventory.jenis %> </td> <td> <%- el.Inventory.serial_number %> </td> <td> <%- `${ formatTanggal(el.tanggal_pinjam) }<strong>    s/d   </strong>${ formatTanggal(el.tanggal_kembali) } ` %> </td>
+                        </tr>
+                    <% })%>
+                   
+                </tbody>
+            </table>  
+        <% } %>
     <% } %>
 
     <% if(typeof inhouse  !== 'undefined'){ %>
-        
-        <h2>ready items :</h2>
-        <br>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>No</th> <th> Jenis </th> <th>Serial Number</th> <th> Tanggal Order </th>
-                </tr>
-            </thead>
-            <tbody>
-                <% inhouse.forEach((el, idx)=>{ %>
+        <% if(inhouse.length > 0){ %>
+            <h2>alat telah diorder atau akan diorder pada  :</h2>
+            <br>
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td> <%- idx + 1 %> </td> <td> <%- el.Inventory.jenis %> </td> <td> <%- el.Inventory.serial_number %> </td> <td> <%- `${ formatTanggal(el.tanggal_pinjam) }<strong>    s/d   </strong>${ formatTanggal(el.tanggal_kembali) } ` %> </td>
+                        <th>No</th> <th> Jenis </th> <th>Serial Number</th> <th> Tanggal Order </th>
                     </tr>
-                <% })%>
-               
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <% inhouse.forEach((el, idx)=>{ %>
+                        <tr>
+                            <td> <%- idx + 1 %> </td> <td> <%- el.Inventory.jenis %> </td> <td> <%- el.Inventory.serial_number %> </td> <td> <%- `${ formatTanggal(el.tanggal_pinjam) }<strong>    s/d   </strong>${ formatTanggal(el.tanggal_kembali) } ` %> </td>
+                        </tr>
+                    <% })%>
+                   
+                </tbody>
+            </table>
+        <% } %>
     <% } %>
 </body>
 </html>

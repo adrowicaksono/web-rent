@@ -1,17 +1,27 @@
-<div class="btn-group" role="group" aria-label="Basic example" id="header-partial">
-<form method="GET" action="/member" style="margin-left:300px;margin-bottom:10px;float:left">
-    <input type="submit" value="MEMBER" class="btn btn-primary">
-</form>
-<form method="GET" action="/inventory" style="float:left" >
-    <input type="submit" value="INVENTORY" class="btn btn-primary">
-</form>
-<form method="GET" action="/transaction" style="float:left">
-    <input type="submit" value="ORDER" class="btn btn-primary">
-</form>
+<% if(typeof user !== 'undefined'){ %>
+<div class="btn-group" role="group" aria-label="Basic example" id="header-partial" style="margin-left:300px;position:fixed">
+    <% if(user.role === "admin"){ %>
+        <form method="GET" action="/member">
+            <input type="submit" value="MEMBER" class="btn btn-primary">
+        </form>
+        <form method="GET" action="/inventory" >
+            <input type="submit" value="INVENTORY" class="btn btn-primary">
+        </form>
+        <form method="GET" action="/transaction">
+            <input type="submit" value="ORDER" class="btn btn-primary">
+        </form>
+    <% } %>
 <form method="GET" action="/lihat_stok">
-    <input type="submit" value="NGINTIP STOK :)" class="btn btn-primary">
+    <input type="submit" value="NGINTIP STOK" class="btn btn-primary">
 </form>
 <form method="GET" action="/stock_opname">
     <input type="submit" value="OPNAME" class="btn btn-primary">
 </form>
+<form method="GET" action="/logout">
+    <input type="submit" value="LOGOUT" class="btn btn-primary">
+</form>
 </div>
+<div>
+    <h5>welcome, <%- user.name %></h5>  
+</div>
+<% } %>
