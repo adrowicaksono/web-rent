@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const model = require('../models');
 const Member = model.Member
+const bcrypt = require('bcrypt')
 
 
 router.get('/',function(req, res, next){
@@ -132,55 +133,67 @@ router.post('/:id/edit',function(req,res,next){
         }
         if(!req.body.email){
             msgError.push("email belom diisi")
-        }
+        }       
         if(msgError.length > 0){
             res.redirect(`/member/${req.params.id}/edit`)
         }else{
-            Member
-            .findOne({where:{id:req.params.id}})
-            .then(function(member){
-                if(member.email === req.body.email){
-                    Member
-                    .update({
-                        name : req.body.name,
-                        alamat : req.body.alamat,
-                        no_telpon : req.body.no_telpon,
-                        data_scan : req.body.data_scan,
-                        role : req.body.role,
-                      }, {
-                        where : {
-                            id : req.params.id,
-                        }
-                      })
-                      .then(function(){
-                          res.redirect('/member')
-                      })
-                      .catch(function(err){
-                          res.send(err.message)
-                      })
-                }else{
-                    Member
-                    .update({
-                        name : req.body.name,
-                        alamat : req.body.alamat,
-                        no_telpon : req.body.no_telpon,
-                        data_scan : req.body.data_scan,
-                        email : req.body.email,
-                        role : req.body.role,
-                      }, {
-                        where : {
-                            id : req.params.id,
-                        }
-                      })
-                      .then(function(){
-                          res.redirect('/member')
-                      })
-                      .catch(function(err){
-                          res.send(err.message)
-                      })
-                }
-            })
+                Member
+                .findOne({where:{id:req.params.id}})
+                .then(function(member){
+                    let newPassword = member.password
+                    let salt = member.salt
 
+                    if(req.body.password){
+                        const saltGenerate = bcrypt.genSaltSync(8)
+                        const hash = bcrypt.hashSync(req.body.password,saltGenerate)
+                        salt = saltGenerate
+                        newPassword = hash
+                    }
+
+                    if(member.email === req.body.email){
+                        Member
+                        .update({
+                            name : req.body.name,
+                            alamat : req.body.alamat,
+                            no_telpon : req.body.no_telpon,
+                            data_scan : req.body.data_scan,
+                            password : newPassword,
+                            salt : salt,
+                            role : req.body.role || null,
+                          }, {
+                            where : {
+                                id : req.params.id,
+                            }
+                          })
+                          .then(function(){
+                              res.redirect('/member')
+                          })
+                          .catch(function(err){
+                              res.send(err.message)
+                          })
+                    }else{
+                        Member
+                        .update({
+                            name : req.body.name,
+                            alamat : req.body.alamat,
+                            no_telpon : req.body.no_telpon,
+                            data_scan : req.body.data_scan,
+                            email : req.body.email,
+                            password : newPassword,
+                            role : req.body.role,
+                          }, {
+                            where : {
+                                id : req.params.id,
+                            }
+                          })
+                          .then(function(){
+                              res.redirect('/member')
+                          })
+                          .catch(function(err){
+                              res.send(err.message)
+                          })
+                    }
+                })
         }
 })
 

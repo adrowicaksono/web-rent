@@ -35,7 +35,10 @@ module.exports = (sequelize, DataTypes) => {
         const hash = bcrypt.hashSync(member.password,saltGenerate)
         member.salt = saltGenerate
         member.password = hash
-      }
+      },
+      beforeBulkUpdate: function(member,option){
+          console.log('update :', member.attributes)
+        },
     }
   });
   Member.associate = function(models) {
