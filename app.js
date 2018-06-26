@@ -58,3 +58,4 @@ app.use('/auth', auth)
 
 
 app.listen(port,console.log('listening on port 4000')) 
+//Error: The module '/app/node_modules/bcrypt/lib/binding/bcrypt_lib.node'
